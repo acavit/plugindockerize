@@ -39,11 +39,11 @@ const Docker = require('dockerode');
   registerContainerToDb() {
     return "created";
   }
-
+/*
   runContainer(paramPath , paramTag , paramCmd , paramName) {
     
                                                           //null = ['bash', '-c', 'uname -a'],
-              this.dockerInst.run(paramPath+':'+paramTag, paramCmd, process.stdout).then(function(data) {
+              this.dockerInst.run(paramPath+':'+paramTag, ['-it'], process.stdout).then(function(data) {
                 var output = data[0];
                 var container = data[1];
                 console.log('output status code :'+output.StatusCode);
@@ -51,7 +51,7 @@ const Docker = require('dockerode');
                 console.log('container :'+JSON.stringify(container));
                 //return container.remove();
               }).then(function(data) {
-                console.log('container removed');
+                console.log('after pulling done '+data);
               }).catch(function(err) {
                 console.log(err);
               });
@@ -59,5 +59,23 @@ const Docker = require('dockerode');
 
     return "created";
   }
+*/
+  runContainer(paramPath , paramTag , paramCmd , paramName) {
+    
+                                                          //null = ['bash', '-c', 'uname -a'],
+              this.dockerInst.run(paramPath+':'+paramTag, ['-it'], [process.stdout, process.stderr], {Tty:false}, function (err, data, container) {
+  //...
+              }).on('container', function (container) {
+                console.log('on container '+ JSON.stringify(container));
+              }).on('data', function (data) {
+                console.log('on data '+ JSON.stringify(data));
+              });
+
+
+    return "created";
+  }
+
+
+
 
 }
